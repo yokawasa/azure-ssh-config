@@ -1,0 +1,6 @@
+{
+    "subscription_id": "<YOUR SUBSCRIPTION ID>",
+    "client_id": "<YOUR APPLICATION CLIENT IP>",
+    "client_scret": "<YOUR APPLICATION CLIENT SCRET>",
+    "tenant_id": "<YOUR TENANT ID>"
+}
