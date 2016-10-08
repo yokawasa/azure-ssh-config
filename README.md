@@ -27,13 +27,13 @@ azure-ssh-config.py --version
 
 ## Configuration
 
-Generate client profile template by executing the following command.
+Generate client profile template file by executing the following command.
 
 ```
 azure-ssh-config.py --init
 ```
 
-Configure client profile file
+Configure the client profile file 
 
 ```
 vi $HOME/.azure/azure-ssh-config.json
@@ -45,6 +45,8 @@ vi $HOME/.azure/azure-ssh-config.json
     "tenant_id": "<YOUR TENANT ID>"
 }
 ```
+
+As you can see, you need to create a service principal to access resources, and fill out the following 4 parameter values. For those who don't know how to create service principal, there is a great instruction: [Use Azure CLI to create a service principal to access resources](https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/)
 
 
 ## Usage
