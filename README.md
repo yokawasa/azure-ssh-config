@@ -132,7 +132,6 @@ Only host entry that belong to specified resource group are added in ssh-config
 
 ## TODO
 
-* Python Packaging
 * Support bash/zsh Completion
 
 
