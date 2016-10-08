@@ -9,8 +9,6 @@ azuresshconfig is a simple script that collects Azure ARM Virtual Machine(VM) in
 
 ## Installation
 
-To run azuresshconfig, [azura](https://pypi.python.org/pypi/azure), [msrestazure](https://pypi.python.org/pypi/msrestazure), and [simplejson](https://pypi.python.org/pypi/simplejson/) python packages need to be installed.
-
 ```
 pip install azuresshconfig
 ```
