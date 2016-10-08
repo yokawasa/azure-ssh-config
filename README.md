@@ -134,6 +134,9 @@ Only host entry that belong to specified resource group are added in ssh-config
 
 * Support bash/zsh Completion
 
+## LINKS
+
+* https://pypi.python.org/pypi/azuresshconfig/
 
 ## Contributing
 
