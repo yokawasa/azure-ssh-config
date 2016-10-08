@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+__author__ = 'Yoichi Kawasaki'
 
 import sys
 import os
@@ -17,7 +20,7 @@ except ImportError:
 ### Global Defines
 _AZURE_SSH_CONFIG_VERSION = '0.1.0'
 _AZURE_SSH_CONFIG_HOME_SITE = 'https://github.com/yokawasa/azure-ssh-config'
-_DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azure-ssh-config.json'.format(os.environ['HOME'])
+_DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azuresshconfig.json'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_FILE = '{}/.ssh/config'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_BLOCK_START_MAKR = "### AZURE-SSH-CONFIG BEGIN ###"
 _DEFAULT_SSH_CONFIG_BLOCK_END_MARK = "### AZURE-SSH-CONFIG END ###"
@@ -54,7 +57,7 @@ class SSHConfig:
     def __init__(self, sshconfig=_DEFAULT_SSH_CONFIG_FILE,
             block_start_mark=_DEFAULT_SSH_CONFIG_BLOCK_START_MAKR, 
             block_end_mark=_DEFAULT_SSH_CONFIG_BLOCK_END_MARK ):
-        self._sshconfig = sshconfig
+        self.sshconfig = sshconfig
         self._block_start_mark = "{}\n".format(block_start_mark)
         self._block_end_mark  = "{}\n".format(block_end_mark)
         self._block = ''
@@ -64,13 +67,13 @@ class SSHConfig:
         self.__parse()
 
     def __prepare(self):
-        if not os.path.exists(self._sshconfig):
+        if not os.path.exists(self.sshconfig):
             # Create an Empty SSH Config file
-            open(self._sshconfig, 'a').close()
+            open(self.sshconfig, 'a').close()
 
     def __parse(self):
         try:
-            f = open(self._sshconfig, "r")
+            f = open(self.sshconfig, "r")
             contents = f.read()
             start_block_mark_startpos = contents.find(self._block_start_mark)
             if (start_block_mark_startpos > -1):
@@ -83,11 +86,11 @@ class SSHConfig:
                     self._post_block = contents[end_block_mark_endpos:]
                 else:
                     print_err("You have start block mark but not end mark!")
-                    raise Exception("Unexpected error: invlid block mark: {0}".format(self._sshconfig))
+                    raise Exception("Unexpected error: invlid block mark: {0}".format(self.sshconfig))
             else:
                 self._pre_block = contents
         except IOError:
-            print_err('Cannot Open %s' % self._sshconfig )
+            print_err('Cannot Open %s' % self.sshconfig )
             raise
         else:
             f.close()
@@ -101,14 +104,14 @@ class SSHConfig:
     def append_block (self,block):
         self._block = block
         try:
-            f = open(self._sshconfig,"w")
+            f = open(self.sshconfig,"w")
             f.write( "{0}{1}{2}\n{3}".format(
                 self._pre_block,
                 self._block_start_mark,
                 block,
                 self._block_end_mark))
         except IOError:
-            print_err('Cannot Open %s' % self._sshconfig )
+            print_err('Cannot Open %s' % self.sshconfig )
             raise
         else:
             f.close
@@ -116,7 +119,7 @@ class SSHConfig:
     def update_block (self, block):
         self._block = block
         try:
-            f = open(self._sshconfig,"w")
+            f = open(self.sshconfig,"w")
             f.write( "{0}{1}{2}\n{3}{4}".format(
                 self._pre_block,
                 self._block_start_mark,
@@ -124,7 +127,7 @@ class SSHConfig:
                 self._block_end_mark,
                 self._post_block))
         except IOError:
-            print_err('Cannot Open {}'.format(self._sshconfig) )
+            print_err('Cannot Open {}'.format(self.sshconfig) )
             raise
         else:
             f.close
@@ -221,16 +224,16 @@ def get_network_interface_info (network_client, network_interface_id):
     return ni_info
 
 
-def  main():
+def main():
     parser = argparse.ArgumentParser(description='This program generates SSH config from Azure ARM VM inventry in subscription')
     parser.add_argument(
         '--version', action='version', version=_AZURE_SSH_CONFIG_VERSION)
     parser.add_argument(
         '--init', action='store_true',
-        help='Create template client profile at $HOME/.azure/azure-ssh-config.json only if there is no existing one')
+        help='Create template client profile at $HOME/.azure/azuresshconfig.json only if there is no existing one')
     parser.add_argument(
         '--profile',
-        help='Specify azure client profile file to use ($HOME/.azure/azure-ssh-config.json by default)')
+        help='Specify azure client profile file to use ($HOME/.azure/azuresshconfig.json by default)')
     parser.add_argument(
         '--user',
         help='SSH username to use for all hosts')
@@ -246,6 +249,11 @@ def  main():
     args = parser.parse_args()
 
     if args.init:
+        # check if $HOME/.azure directory exists and create if not exists
+        azure_config_home = '{}/.azure'.format(os.environ['HOME'])
+        if not os.path.exists(azure_config_home):
+            os.makedirs(azure_config_home)
+
         # Initialize azure client profile file
         if not os.path.exists(_DEFAULT_AZURE_SSH_CONFIG_JSON_FILE):
             ClientProfileConfig.generate_template(_DEFAULT_AZURE_SSH_CONFIG_JSON_FILE)   
@@ -263,6 +271,7 @@ def  main():
                   "For the client profile detail, refer to {1}".format(
                     client_profile_file, _AZURE_SSH_CONFIG_HOME_SITE))
         quit()
+
     ssh_default_user = args.user if args.user else ''
     ssh_default_identityfile = args.identityfile if args.identityfile else ''
     option_private_ip = args.private
@@ -326,7 +335,11 @@ def  main():
     else:
         ssh_config.append_block(ssh_config_block)
 
+    print "Done! Updated: {}".format(ssh_config.sshconfig)
 
 if __name__ == "__main__":
     main()
 
+#
+# vim:ts=4 et
+#

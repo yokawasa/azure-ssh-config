@@ -1,28 +1,18 @@
-# azure-ssh-config
+# AZURE SSH CONFIG (azuresshconfig)
 
 Generate SSH config file from Azure ARM VM inventry in subscription
 
 ## Introduction
 
-azure-ssh-config is a simple script that collects Azure ARM Virtual Machine(VM) inventry in subscription and generate a SSH config entries to be appended to $HOME/.ssh/config (the file is newly created if no exist). This is like an Azure version of [ec2ssh](https://github.com/mirakui/ec2ssh) or [aws-ssh-config](https://github.com/gianlucaborello/aws-ssh-config) that strongly inspired this initiative. This would be very helpful when you manage lots of VMs that have dynamic IP assignment settings and need frequent VM up-and-down operations for them which causes the change of IPs assigned to VMs. In such a case, azure-ssh-config will definitly make your SSH life easy.
+azuresshconfig is a simple script that collects Azure ARM Virtual Machine(VM) inventry in subscription and generate a SSH config entries to be appended to $HOME/.ssh/config (the file is newly created if no exist). This is like an Azure version of [ec2ssh](https://github.com/mirakui/ec2ssh) or [aws-ssh-config](https://github.com/gianlucaborello/aws-ssh-config) that strongly inspired this initiative. This would be very helpful when you manage lots of VMs that have dynamic IP assignment settings and need frequent VM up-and-down operations for them which causes the change of IPs assigned to VMs. In such a case, azuresshconfig will definitly make your SSH life easy.
 
 
 ## Installation
 
-To run azure-ssh-config, [azura](https://pypi.python.org/pypi/azure), [msrestazure](https://pypi.python.org/pypi/msrestazure), and [simplejson](https://pypi.python.org/pypi/simplejson/) python packages need to be installed.
+To run azuresshconfig, [azura](https://pypi.python.org/pypi/azure), [msrestazure](https://pypi.python.org/pypi/msrestazure), and [simplejson](https://pypi.python.org/pypi/simplejson/) python packages need to be installed.
 
 ```
-pip install simplejson
-pip install --pre azure --upgrade
-pip install msrestazure
-```
-
-Get azure-ssh-config script copy from github and see if all required packages are installed
-
-```
-git clone git@github.com:yokawasa/azure-ssh-config.git
-cd azure-ssh-config
-azure-ssh-config.py --version
+pip install azuresshconfig
 ```
 
 ## Configuration
@@ -30,13 +20,13 @@ azure-ssh-config.py --version
 Generate client profile template file by executing the following command.
 
 ```
-azure-ssh-config.py --init
+azuresshconfig --init
 ```
 
 Configure the client profile file 
 
 ```
-vi $HOME/.azure/azure-ssh-config.json
+vi $HOME/.azure/azuresshconfig.json
 
 {
     "subscription_id": "<YOUR SUBSCRIPTION ID>",
@@ -46,17 +36,17 @@ vi $HOME/.azure/azure-ssh-config.json
 }
 ```
 
-As you can see, you need to create a service principal to access resources, and fill out the following 4 parameter values. For those who don't know how to create service principal, there is a great instruction: [Use Azure CLI to create a service principal to access resources](https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/)
+As you can see, you need to create a service principal to fill out the parameters above. For those who don't know how to create service principal, there is a great instruction: [Use Azure CLI to create a service principal to access resources](https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/)
 
 
 ## Usage
 
-Assuming all required packages are installed and rightly configured, you're ready to run azure-ssh-config
+Assuming all required packages are installed and rightly configured, you're ready to run azuresshconfig
 
 ```
-python azure-ssh-config.py --help
+python azuresshconfig --help
 
-usage: azure-ssh-config.py [-h] [--version] [--init] [--profile PROFILE]
+usage: azuresshconfig [-h] [--version] [--init] [--profile PROFILE]
                            [--user USER] [--identityfile IDENTITYFILE]
                            [--private] [--resourcegroups RESOURCEGROUPS]
 
@@ -68,7 +58,7 @@ optional arguments:
   --init                Create template client profile at $HOME/.azure/azure-
                         ssh-config.json only if there is no existing one
   --profile PROFILE     Specify azure client profile file to use ($HOME/.azure
-                        /azure-ssh-config.json by default)
+                        /azuresshconfig.json by default)
   --user USER           SSH username to use for all hosts
   --identityfile IDENTITYFILE
                         SSH identity file to use for all hosts
@@ -83,7 +73,7 @@ optional arguments:
 
 ### 1. Running with no optional args
 ```
-azure-ssh-config.py
+azuresshconfig
 ```
 
 Each host entry in output ssh-config file is simple like this:
@@ -106,7 +96,7 @@ Host myvm2
 
 ### 2. Running with user and identity file options
 ```
-azure-ssh-config.py --user yoichika --identityfile ~/.ssh/id_rsa
+azuresshconfig --user yoichika --identityfile ~/.ssh/id_rsa
 ```
 
 User and identify file are added to each host entry in output ssh-config file:
@@ -132,7 +122,7 @@ Host myvm2
 
 ### 3. Running with user, identity file, and resource group options
 ```
-azure-ssh-config.py --user yoichika \
+azuresshconfig --user yoichika \
                 --identityfile ~/.ssh/id_rsa \
                 --resourcegroups mygroup1,mygroup2
 ```
