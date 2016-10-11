@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 ### Global Defines
-_AZURE_SSH_CONFIG_VERSION = '0.1.0'
+_AZURE_SSH_CONFIG_VERSION = '0.1.1'
 _AZURE_SSH_CONFIG_HOME_SITE = 'https://github.com/yokawasa/azure-ssh-config'
 _DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azuresshconfig.json'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_FILE = '{}/.ssh/config'.format(os.environ['HOME'])
@@ -145,10 +145,10 @@ class ClientProfileConfig:
         try:
             cf = open(config_file, 'r')
             o = json.load(cf)
-            self.subscription_id= o['subscription_id']
-            self.client_id = o['client_id'] 
-            self.client_scret = o['client_scret']
-            self.tenant_id = o['tenant_id']
+            self.subscription_id= str(o['subscription_id'])
+            self.client_id = str(o['client_id'])
+            self.client_scret = str(o['client_scret'])
+            self.tenant_id = str(o['tenant_id'])
         except IOError:
             print_err('Cannot Open {}'.format(config_file) )
         else:
