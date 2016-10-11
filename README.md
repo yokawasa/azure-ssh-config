@@ -1,4 +1,4 @@
-# AZURE SSH CONFIG (azuresshconfig)
+# Azure SSH Config (azuresshconfig)
 
 Generate SSH config file from Azure ARM VM inventry in subscription
 
@@ -42,7 +42,7 @@ As you can see, you need to create a service principal to fill out the parameter
 Assuming all required packages are installed and rightly configured, you're ready to run azuresshconfig
 
 ```
-python azuresshconfig --help
+azuresshconfig --help
 
 usage: azuresshconfig [-h] [--version] [--init] [--profile PROFILE]
                            [--user USER] [--identityfile IDENTITYFILE]
@@ -127,12 +127,20 @@ azuresshconfig --user yoichika \
 
 Only host entry that belong to specified resource group are added in ssh-config
 
-
-## TODO
+## Todo
 
 * Support bash/zsh Completion
 
-## LINKS
+## Issues
+
+* [Kown Issues and resolutions](Issues.md)
+* [Current Issues, bugs, and requests](https://github.com/yokawasa/azure-ssh-config/issues)
+
+## Change log
+
+* [Changelog](ChangeLog.md)
+
+## Links
 
 * https://pypi.python.org/pypi/azuresshconfig/
 
