@@ -143,6 +143,7 @@ Only host entry that belong to specified resource group are added in ssh-config
 ## Links
 
 * https://pypi.python.org/pypi/azuresshconfig/
+* http://unofficialism.info/posts/azuresshconfig/
 
 ## Contributing
 
