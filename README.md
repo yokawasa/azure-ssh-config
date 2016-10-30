@@ -44,19 +44,21 @@ Assuming all required packages are installed and rightly configured, you're read
 ```
 azuresshconfig --help
 
-usage: azuresshconfig [-h] [--version] [--init] [--profile PROFILE]
-                           [--user USER] [--identityfile IDENTITYFILE]
-                           [--private] [--resourcegroups RESOURCEGROUPS]
+usage: azuresshconfig.py [-h] [--version] [--init] [--profile PROFILE]
+                         [--user USER] [--identityfile IDENTITYFILE]
+                         [--private] [--resourcegroups RESOURCEGROUPS]
+                         [--params PARAMS]
 
 This program generates SSH config from Azure ARM VM inventry in subscription
 
 optional arguments:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
-  --init                Create template client profile at $HOME/.azure/azure-
-                        ssh-config.json only if there is no existing one
-  --profile PROFILE     Specify azure client profile file to use ($HOME/.azure
-                        /azuresshconfig.json by default)
+  --init                Create template client profile at
+                        $HOME/.azure/azuresshconfig.json only if there is no
+                        existing one
+  --profile PROFILE     Specify azure client profile file to use
+                        ($HOME/.azure/azuresshconfig.json by default)
   --user USER           SSH username to use for all hosts
   --identityfile IDENTITYFILE
                         SSH identity file to use for all hosts
@@ -66,6 +68,8 @@ optional arguments:
                         A comma-separated list of resource group to be
                         considered for ssh-config generation (all resource
                         groups by default)
+  --params PARAMS       Any ssh-config params you want to add with query-
+                        string format: key1=value1&key2=value2&...
 ```
 
 
@@ -106,12 +110,12 @@ cat ~/.ssh/config
 
 Host myvm1
     HostName 40.74.124.30
-    IdentityFile /home/yoichika/.ssh/id_rsa
+    IdentityFile ~/.ssh/id_rsa
     User yoichika
 
 Host myvm2
     HostName 40.74.116.134
-    IdentityFile /home/yoichika/.ssh/id_rsa
+    IdentityFile ~/.ssh/id_rsa
     User yoichika
 ....
 
@@ -127,9 +131,74 @@ azuresshconfig --user yoichika \
 
 Only host entry that belong to specified resource group are added in ssh-config
 
+### 4. Running with user, identity file, and additional ssh-config params
+```
+azuresshconfig.py --user yoichika \
+                --identityfile ~/.ssh/id_rsa \
+                --params "Port=2222&Protocol=2&UserKnownHostsFile=~/.ssh/known_hosts&ForwardAgent=yes"
+```
+
+Additional ssh-config params specified by --params are added to an output ssh-config file like this:
+
+```
+cat ~/.ssh/config
+
+### AZURE-SSH-CONFIG BEGIN ###
+
+Host myvm1
+    HostName 40.74.124.30
+    IdentityFile ~/.ssh/id_rsa
+    User yoichika
+    Port 2222
+    Protocol 2
+    UserKnownHostsFile ~/.ssh/known_hosts
+    ForwardAgent yes
+
+Host myvm2
+    HostName 40.74.116.134
+    IdentityFile /home/yoichika/.ssh/id_rsa
+    User yoichika
+    Port 2222
+    Protocol 2
+    UserKnownHostsFile ~/.ssh/known_hosts
+    ForwardAgent yes
+....
+
+### AZURE-SSH-CONFIG END ###
+```
+
+## Shell Completion
+### Bash
+Bash completion will work by loading bash/[azuresshconfig_completion.bash](https://github.com/yokawasa/azure-ssh-config/blob/master/bash/azuresshconfig_completion.bash). In order to load azuresshconfig_completion.bash, you can do like this
+```
+# copy this under either of following directories
+cp azuresshconfig_completion.bash (/etc/bash_completion.d | /usr/local/etc/bash_completion.d | ~/bash_completion.d)
+
+# or append 'source /path/to/azuresshconfig_completion.bash' to .bashrc like this
+echo 'source /path/to/azuresshconfig_completion.bash' >> .bashrc
+```
+
+Once azuresshconfig_completion.bash is loaded, Bash completion will work this:
+```
+$ azuresshconfig -[tab]
+-h                --identityfile    --params          --profile         --user
+--help            --init            --private         --resourcegroups
+
+$ azuresshconfig --i[tab]
+--identityfile  --init
+
+$ azuresshconfig --p[tab]
+--params   --private  --profile
+
+$ azuresshconfig --user [tab]
+$ azuresshconfig --user <ssh_user>
+$ azuresshconfig --user <ssh_user> --identityfile [tab]
+$ azuresshconfig --user <ssh_user> --identityfile <ssh_identity_file>
+```
+
 ## Todo
 
-* Support bash/zsh Completion
+* Support zsh Completion (Hopefully support it soon)
 
 ## Issues
 

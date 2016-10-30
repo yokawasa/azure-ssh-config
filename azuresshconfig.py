@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 ### Global Defines
-_AZURE_SSH_CONFIG_VERSION = '0.1.1'
+_AZURE_SSH_CONFIG_VERSION = '0.2.0'
 _AZURE_SSH_CONFIG_HOME_SITE = 'https://github.com/yokawasa/azure-ssh-config'
 _DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azuresshconfig.json'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_FILE = '{}/.ssh/config'.format(os.environ['HOME'])
@@ -29,8 +29,8 @@ _DEFAULT_SSH_CONFIG_BLOCK_END_MARK = "### AZURE-SSH-CONFIG END ###"
 class SSHConfigBlock:
     def __init__(self):
         self._entries = []
-        self._ssh_config_param_defines = [
-            'IdentityFile','User','Port','Protocol','ForwardAgent']
+        # definitions below are collected from man ssh_config(5) 
+        self._ssh_config_param_defines = ['Host', 'AddressFamily', 'BatchMode', 'BindAddress', 'ChallengeResponseAuthentication', 'CheckHostIP', 'Cipher', 'Ciphers', 'ClearAllForwardings', 'Compression', 'CompressionLevel', 'ConnectionAttempts', 'ConnectTimeout', 'ControlMaster', 'ControlPath', 'ControlPersist', 'DynamicForward', 'EnableSSHKeysign', 'EscapeChar', 'ExitOnForwardFailure', 'ForwardAgent', 'ForwardX11', 'ForwardX11Timeout', 'ForwardX11Trusted', 'GatewayPorts', 'GlobalKnownHostsFile', 'GSSAPIAuthentication', 'GSSAPIDelegateCredentials', 'HashKnownHosts', 'HostbasedAuthentication', 'HostKeyAlgorithms', 'HostKeyAlias', 'HostName', 'IdentitiesOnly', 'IdentityFile', 'IgnoreUnknown', 'IPQoS', 'KbdInteractiveAuthentication', 'KbdInteractiveDevices', 'KexAlgorithms', 'LocalCommand', 'LocalForward', 'LogLevel', 'MACs', 'NoHostAuthenticationForLocalhost', 'NumberOfPasswordPrompts', 'PasswordAuthentication', 'PermitLocalCommand', 'PKCS11Provider', 'Port', 'PreferredAuthentications', 'Protocol', 'ProxyCommand', 'PubkeyAuthentication', 'RekeyLimit', 'RemoteForward', 'RequestTTY', 'RhostsRSAAuthentication', 'RSAAuthentication', 'SendEnv', 'ServerAliveCountMax', 'ServerAliveInterval', 'StrictHostKeyChecking', 'TCPKeepAlive', 'Tunnel', 'TunnelDevice', 'UsePrivilegedPort', 'User', 'UserKnownHostsFile', 'VerifyHostKeyDNS', 'VersionAddendum', 'VisualHostKey', 'XAuthLocation' ]
 
     def add_entry(self,entry_name, access_address, params ):
         entry = {
@@ -246,6 +246,9 @@ def main():
     parser.add_argument(
         '--resourcegroups',
         help='A comma-separated list of resource group to be considered for ssh-config generation (all resource groups by default)')
+    parser.add_argument(
+        '--params',
+        help='Any ssh-config params you want to add with query-string format: key1=value1&key2=value2&...')
     args = parser.parse_args()
 
     if args.init:
@@ -281,6 +284,13 @@ def main():
         rslist= lower_rg.split(',')
         if len(rslist) > 0:
             filter_resource_groups = rslist
+    additional_params = []
+    if args.params:
+        pairlist = args.params.split('&')
+        for s in pairlist:
+            p = s.split('=')
+            if (len(p)==2):
+                additional_params.append(p)
 
     ### Load Config 
     cconf = ClientProfileConfig(client_profile_file)
@@ -326,6 +336,9 @@ def main():
             params['User'] = ssh_default_user
         if ssh_default_identityfile:
             params['IdentityFile'] = ssh_default_identityfile
+        if len(additional_params) > 0:
+            for pset in additional_params:
+                params[pset[0]] = pset[1]
         scblock.add_entry(v['name'], v['access_ip'],params)
     ssh_config_block = scblock.to_string()
 
