@@ -13,28 +13,7 @@ _azuresshconfig() {
     subcmds="-h --help --init --profile --user --identityfile --private --resourcegroups --params"
     # contextual completion
     case $prev in
-        azuresshconfig)
-            case $cur in
-            --p*)
-                COMPREPLY=( $(compgen -W "--profile --private --params") )
-                ;;
-            --i*)
-                COMPREPLY=( $(compgen -W "--init --identityfile") )
-                ;;
-            --r*)
-                COMPREPLY=( $(compgen -W "--resourcegroups") )
-                ;;
-            --u*)
-                COMPREPLY=( $(compgen -W "--user") )
-                ;;
-            *)
-                COMPREPLY=( $(compgen -W "$subcmds") )
-                ;;
-            esac
-            return 0
-            ;;
-        --identityfile)
-            COMPREPLY=("<ssh_identity_file>")
+        --identityfile) COMPREPLY=("<ssh_identity_file>")
             return 0
             ;;
         --profile)
@@ -56,21 +35,40 @@ _azuresshconfig() {
     esac
 
     case $cur in
+        --pa*)
+            COMPREPLY=( $(compgen -W "--params") ) 
+            return 0
+            ;;
+        --pr*)
+            if [[ "$cur" == --pro* ]]; then
+                COMPREPLY=( $(compgen -W "--profile") ) 
+            elif [[ "$cur" == --pri* ]]; then
+                COMPREPLY=( $(compgen -W "--private") ) 
+            else
+                COMPREPLY=( $(compgen -W "--profile --private") )
+            fi
+            return 0
+            ;;
         --p*)
             COMPREPLY=( $(compgen -W "--profile --private --params") )
+            return 0
             ;;
         --i*)
-            COMPREPLY=( $(compgen -W "--init --identityfile") )
+            if [[ "$cur" == --in* ]]; then
+                COMPREPLY=( $(compgen -W "--init") ) 
+            elif [[ "$cur" == --id* ]]; then
+                COMPREPLY=( $(compgen -W "--identityfile") )
+            else
+                COMPREPLY=( $(compgen -W "--init --identityfile") )
+            fi
+            return 0
             ;;
         --r*)
-            COMPREPLY=( $(compgen -W "--resourcegroups") )
-            ;;
+            COMPREPLY=( $(compgen -W "--resourcegroups") ) ;;
         --u*)
-            COMPREPLY=( $(compgen -W "--user") )
-            ;;
+            COMPREPLY=( $(compgen -W "--user") ) ;;
         *)
-            COMPREPLY=( $(compgen -W "$subcmds") )
-            ;;
+            COMPREPLY=( $(compgen -W "$subcmds") ) ;;
     esac
     return 0
 }
