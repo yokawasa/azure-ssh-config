@@ -167,6 +167,32 @@ Host myvm2
 ### AZURE-SSH-CONFIG END ###
 ```
 
+## Docker (Dockerfile)
+
+Now docker image for azuresshconfig is available (yoichikawasaki/azuresshconfig). The image is based on Alpine Linux image, and contains Python2.7, pip, azuresshconfig Python packages and its prerequisite libraries.
+
+Download size of this image is only 155 MB
+```
+$ docker images azuresshconfig
+REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+azuresshconfig                     latest              7488bef4343f        7 minutes ago       155 MB
+```
+
+Usage Example
+-------------
+
+```bash
+$ docker run --rm -it yoichikawasaki/azuresshconfig \
+    --profile $HOME/.azure/azuresshconfig.json --user yoichika --identityfile ~/.ssh/id_rsa
+```
+or you can build from Dockerfile and run your local images like this:
+
+```bash
+$ docker build -t azuresshconfig .
+$ docker run --rm -it azuresshconfig \
+    --profile $HOME/.azure/azuresshconfig.json --user yoichika --identityfile ~/.ssh/id_rsa
+```
+
 ## Shell Completion
 ### Bash
 Bash completion will work by loading bash/[azuresshconfig_completion.bash](https://github.com/yokawasa/azure-ssh-config/blob/master/bash/azuresshconfig_completion.bash). In order to load azuresshconfig_completion.bash, you can do like this
