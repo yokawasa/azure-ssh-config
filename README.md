@@ -178,8 +178,7 @@ REPOSITORY                          TAG                 IMAGE ID            CREA
 azuresshconfig                     latest              7488bef4343f        7 minutes ago       155 MB
 ```
 
-Usage Example
--------------
+### Usage Example
 
 ```bash
 $ docker run --rm -it yoichikawasaki/azuresshconfig \
