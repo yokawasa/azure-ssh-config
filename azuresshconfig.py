@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 ### Global Defines
-_AZURE_SSH_CONFIG_VERSION = '0.2.0'
+_AZURE_SSH_CONFIG_VERSION = '0.2.1'
 _AZURE_SSH_CONFIG_HOME_SITE = 'https://github.com/yokawasa/azure-ssh-config'
 _DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azuresshconfig.json'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_FILE = '{}/.ssh/config'.format(os.environ['HOME'])
@@ -208,6 +208,8 @@ def get_network_interface_info (network_client, network_interface_id):
     # privte ip
     ni_info['private_ip'] = ipconfig.private_ip_address
     # get public address
+    if not ipconfig.public_ip_address:
+        return ni_info
     public_address_id = ipconfig.public_ip_address.id
     # public address id format:
     #   /subscriptions/<s>/resourceGroups/<s>/providers/<s>/publicIPAddresses/<s>
