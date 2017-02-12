@@ -1,3 +1,7 @@
+## 0.2.2
+
+* fixedup bug - [Issue #3](https://github.com/yokawasa/azure-ssh-config/issues/3): Bug: Duplicate HostName definitions showed for each host entry
+
 ## 0.2.1
 
 * fixedup bug - [Issue #2](https://github.com/yokawasa/azure-ssh-config/issues/2): error occurs when VM doesn't have public IP address assosciated

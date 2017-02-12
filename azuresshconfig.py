@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 ### Global Defines
-_AZURE_SSH_CONFIG_VERSION = '0.2.1'
+_AZURE_SSH_CONFIG_VERSION = '0.2.2'
 _AZURE_SSH_CONFIG_HOME_SITE = 'https://github.com/yokawasa/azure-ssh-config'
 _DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azuresshconfig.json'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_FILE = '{}/.ssh/config'.format(os.environ['HOME'])
@@ -48,7 +48,7 @@ class SSHConfigBlock:
             buffer += "Host {}\n".format(entry['Name'])
             buffer += "    HostName {}\n".format(entry['HostName'])
             for d in self._ssh_config_param_defines:
-                if exists_in_dict(d, entry):
+                if exists_in_dict(d, entry) and d != 'HostName':
                     buffer += "    {0} {1}\n".format(d, entry[d])
             buffer += "\n"
         return buffer
