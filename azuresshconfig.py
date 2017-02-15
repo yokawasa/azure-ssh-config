@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 ### Global Defines
-_AZURE_SSH_CONFIG_VERSION = '0.2.2'
+_AZURE_SSH_CONFIG_VERSION = '0.2.3'
 _AZURE_SSH_CONFIG_HOME_SITE = 'https://github.com/yokawasa/azure-ssh-config'
 _DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azuresshconfig.json'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_FILE = '{}/.ssh/config'.format(os.environ['HOME'])
@@ -237,6 +237,9 @@ def main():
         '--profile',
         help='Specify azure client profile file to use ($HOME/.azure/azuresshconfig.json by default)')
     parser.add_argument(
+        '--output',
+        help='Specify ssh config file path ($HOME/.ssh/config by default). Or specify "stdout" if you want to print its output to STDOUT')
+    parser.add_argument(
         '--user',
         help='SSH username to use for all hosts')
     parser.add_argument(
@@ -276,7 +279,8 @@ def main():
                   "For the client profile detail, refer to {1}".format(
                     client_profile_file, _AZURE_SSH_CONFIG_HOME_SITE))
         quit()
-
+     
+    ssh_config_output = args.output if args.output else _DEFAULT_SSH_CONFIG_FILE
     ssh_default_user = args.user if args.user else ''
     ssh_default_identityfile = args.identityfile if args.identityfile else ''
     option_private_ip = args.private
@@ -344,14 +348,16 @@ def main():
         scblock.add_entry(v['name'], v['access_ip'],params)
     ssh_config_block = scblock.to_string()
 
-    ssh_config = SSHConfig()
-    if ssh_config.block_exists():
-        ssh_config.update_block(ssh_config_block)
+    if ssh_config_output.lower() == 'stdout':
+        print "{}".format(ssh_config_block)
     else:
-        ssh_config.append_block(ssh_config_block)
-
-    print "Done! Updated: {}".format(ssh_config.sshconfig)
-
+        ssh_config = SSHConfig(ssh_config_output)
+        if ssh_config.block_exists():
+            ssh_config.update_block(ssh_config_block)
+        else:
+            ssh_config.append_block(ssh_config_block)
+        print "Done! Updated: {}".format(ssh_config.sshconfig)
+    
 if __name__ == "__main__":
     main()
 

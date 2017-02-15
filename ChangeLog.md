@@ -1,3 +1,7 @@
+## 0.2.3
+
+* added a new parameter --output <ssh-config file path> as requested at [Issue #4](https://github.com/yokawasa/azure-ssh-config/issues/4)
+
 ## 0.2.2
 
 * fixedup bug - [Issue #3](https://github.com/yokawasa/azure-ssh-config/issues/3): Bug: Duplicate HostName definitions showed for each host entry

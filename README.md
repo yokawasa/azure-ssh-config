@@ -45,9 +45,9 @@ Assuming all required packages are installed and rightly configured, you're read
 azuresshconfig --help
 
 usage: azuresshconfig.py [-h] [--version] [--init] [--profile PROFILE]
-                         [--user USER] [--identityfile IDENTITYFILE]
-                         [--private] [--resourcegroups RESOURCEGROUPS]
-                         [--params PARAMS]
+                         [--output OUTPUT] [--user USER]
+                         [--identityfile IDENTITYFILE] [--private]
+                         [--resourcegroups RESOURCEGROUPS] [--params PARAMS]
 
 This program generates SSH config from Azure ARM VM inventry in subscription
 
@@ -59,6 +59,9 @@ optional arguments:
                         existing one
   --profile PROFILE     Specify azure client profile file to use
                         ($HOME/.azure/azuresshconfig.json by default)
+  --output OUTPUT       Specify ssh config file path ($HOME/.ssh/config by
+                        default). Or specify "stdout" if you want to print its
+                        output to STDOUT
   --user USER           SSH username to use for all hosts
   --identityfile IDENTITYFILE
                         SSH identity file to use for all hosts
@@ -96,15 +99,15 @@ Host myvm2
 ```
 
 
-### 2. Running with user and identity file options
+### 2. Running with user, output, and identity file options
 ```
-azuresshconfig --user yoichika --identityfile ~/.ssh/id_rsa
+azuresshconfig --user yoichika --output /mypath/config --identityfile ~/.ssh/id_rsa
 ```
 
 User and identify file are added to each host entry in output ssh-config file:
 
 ```
-cat ~/.ssh/config
+cat /mypath/config
 
 ### AZURE-SSH-CONFIG BEGIN ###
 
@@ -181,15 +184,19 @@ azuresshconfig                     latest              7488bef4343f        7 min
 ### Usage Example
 
 ```bash
-$ docker run --rm -it yoichikawasaki/azuresshconfig \
-    --profile $HOME/.azure/azuresshconfig.json --user yoichika --identityfile ~/.ssh/id_rsa
+$ docker run -v $HOME/.azure:/root/tmp \
+    --rm -it yoichikawasaki/azuresshconfig \
+    --profile /root/tmp/azuresshconfig.json --output stdout \
+    --user yoichika --identityfile ~/.ssh/id_rsa >> $HOME/.ssh/config
 ```
 or you can build from Dockerfile and run your local images like this:
 
 ```bash
 $ docker build -t azuresshconfig .
-$ docker run --rm -it azuresshconfig \
-    --profile $HOME/.azure/azuresshconfig.json --user yoichika --identityfile ~/.ssh/id_rsa
+$ docker run -v $HOME/.azure:/root/tmp \
+    --rm -it azuresshconfig \
+    --profile /root/tmp/azuresshconfig.json --output stdout \
+    --user yoichika --identityfile ~/.ssh/id_rsa >> $HOME/.ssh/config
 ```
 
 ## Shell Completion
