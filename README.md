@@ -187,7 +187,7 @@ azuresshconfig                     latest              7488bef4343f        7 min
 $ docker run -v $HOME/.azure:/root/tmp \
     --rm -it yoichikawasaki/azuresshconfig \
     --profile /root/tmp/azuresshconfig.json --output stdout \
-    --user yoichika --identityfile ~/.ssh/id_rsa >> $HOME/.ssh/config
+    --user yoichika --identityfile ~/.ssh/id_rsa > $HOME/.ssh/config
 ```
 or you can build from Dockerfile and run your local images like this:
 
@@ -196,7 +196,7 @@ $ docker build -t azuresshconfig .
 $ docker run -v $HOME/.azure:/root/tmp \
     --rm -it azuresshconfig \
     --profile /root/tmp/azuresshconfig.json --output stdout \
-    --user yoichika --identityfile ~/.ssh/id_rsa >> $HOME/.ssh/config
+    --user yoichika --identityfile ~/.ssh/id_rsa > $HOME/.ssh/config
 ```
 
 ## Shell Completion
