@@ -40,7 +40,6 @@ Suppose your app id uri is 'http://unofficialism.info' and role you want to give
 
 ```
 az ad sp create-for-rbac -n "http://unofficialism.info" --role reader
-
 ```
 
 You will get an output like this, and with them you can fill out the client profile file:
