@@ -21,7 +21,7 @@ Generate client profile template file by executing the following command.
 azuresshconfig --init
 ```
 
-Configure the client profile file 
+Configure the client profile file, in which you add your service principal account info to access your resources in Azure via Azure APIs.
 
 ```
 vi $HOME/.azure/azuresshconfig.json
@@ -34,7 +34,28 @@ vi $HOME/.azure/azuresshconfig.json
 }
 ```
 
-As you can see, you need to create a service principal to fill out the parameters above. For those who don't know how to create service principal, there is a great instruction: [Use Azure CLI to create a service principal to access resources](https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/)
+For those who don't know how to create service principal, there is a great instruction: [Use Azure CLI to create a service principal to access resources](https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/). If you have Azure CLI 2.0 command installed on your evironment, you can create your service principal and configure its access to your azure resources with a single command 'az ad sp create-for-rbac'. 
+
+Suppose your app id uri is 'http://unofficialism.info' and role you want to give for the app is 'Reader', you can create your service principal like this:
+
+```
+az ad sp create-for-rbac -n "http://unofficialism.info" --role reader
+
+```
+
+You will get an output like this, and with them you can fill out the client profile file:
+
+```
+{
+  "appId": "c36x4b4f-bef6-422e-bd3b-65057e7ab065",        # -> client_id in client profile file
+  "displayName": "azure-cli-2017-03-30-05-16-59",         
+  "name": "http://unofficialism.info",
+  "password": "32126d32-7453-4053-3353-c420d4ffef2e",     # -> client_scret in client profile file
+  "tenant": "72f988bf-86f1-41af-91cb-2d7cd011db47"        # -> tenant_id in client profile file
+}
+```
+
+For the detail of service principal role, please refer to [Built-in roles for Azure Role-Based Access Control](https://docs.microsoft.com/en-us/azure/active-directory/role-based-access-built-in-roles).
 
 
 ## Usage
