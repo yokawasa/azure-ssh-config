@@ -2,7 +2,7 @@ title: azuresshconfig
 description: Generate SSH config file from Azure ARM VM inventry in subscription
 google_analytics: 
 show_downloads: true
-theme: jekyll-theme-dinky
+theme: jekyll-theme-tactile
 
 gems:
   - jekyll-mentions
