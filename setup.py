@@ -4,6 +4,12 @@ try:
 except ImportError:
     from distutils.core import setup
 
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError):
+    long_description = open('README.md').read()
+
 with open('azuresshconfig.py', 'r') as fd:
     version = re.search(
         r'^_AZURE_SSH_CONFIG_VERSION\s*=\s*[\'"]([^\'"]*)[\'"]',
@@ -12,6 +18,7 @@ with open('azuresshconfig.py', 'r') as fd:
 setup(name='azuresshconfig',
     version=version,
     description='Generate SSH config file from Azure ARM VM inventry in subscription',
+    long_description=long_description,
     author='Yoichi Kawasaki',
     author_email='yoichi.kawasaki@outlook.com',
     url='https://github.com/yokawasa/azure-ssh-config',
