@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 ### Global Defines
-_AZURE_SSH_CONFIG_VERSION = '0.2.3'
+_AZURE_SSH_CONFIG_VERSION = '0.3.0'
 _AZURE_SSH_CONFIG_HOME_SITE = 'https://github.com/yokawasa/azure-ssh-config'
 _DEFAULT_AZURE_SSH_CONFIG_JSON_FILE = '{}/.azure/azuresshconfig.json'.format(os.environ['HOME'])
 _DEFAULT_SSH_CONFIG_FILE = '{}/.ssh/config'.format(os.environ['HOME'])
@@ -180,11 +180,8 @@ class ClientProfileConfig:
 def print_err(s):
     sys.stderr.write("[ERROR] {}\n".format(s))
 
-def exists_in_list (elem, target_list):
-    return elem in target_list
-
 def exists_in_dict (key, target_dict):
-    return True if ( target_dict.has_key(key) and target_dict[key] ) else False
+    return True if ( (key in target_dict) and target_dict[key] ) else False
 
 def get_resorucegroup_from_vmid (vmid):
     ids = vmid.split('/')
@@ -193,7 +190,6 @@ def get_resorucegroup_from_vmid (vmid):
     if len(ids) != 9:
         pass
     return ids[4]
-
 
 def get_network_interface_info (network_client, network_interface_id):
     ni_info = {}
@@ -317,7 +313,7 @@ def main():
         # Filtering by resource group if needed
         if len(filter_resource_groups) > 0:
             r = vm_rgroup.lower()
-            if not exists_in_list(r, filter_resource_groups ):
+            if not (r in filter_resource_groups):
                 continue  # skip
         network_interfaces = vm.network_profile.network_interfaces
         for ni in network_interfaces:
@@ -349,14 +345,14 @@ def main():
     ssh_config_block = scblock.to_string()
 
     if ssh_config_output.lower() == 'stdout':
-        print "{}".format(ssh_config_block)
+        print("{}".format(ssh_config_block))
     else:
         ssh_config = SSHConfig(ssh_config_output)
         if ssh_config.block_exists():
             ssh_config.update_block(ssh_config_block)
         else:
             ssh_config.append_block(ssh_config_block)
-        print "Done! Updated: {}".format(ssh_config.sshconfig)
+        print("Done! Updated: {}".format(ssh_config.sshconfig))
     
 if __name__ == "__main__":
     main()

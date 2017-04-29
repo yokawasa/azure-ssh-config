@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Support Python3 - [Issue #5](https://github.com/yokawasa/azure-ssh-config/issues/5)
+
 ## 0.2.3
 
 * added a new parameter --output <ssh-config file path> as requested at [Issue #4](https://github.com/yokawasa/azure-ssh-config/issues/4)
